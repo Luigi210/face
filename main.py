@@ -1,6 +1,7 @@
 import cv2
 import random as rd
 import os
+from deepface import DeepFace
 # import dlib
 # import face_recognition
 # import cmake
