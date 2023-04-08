@@ -64,7 +64,7 @@ def showEllipse(img, show=True):
             # res = DeepFace.find()
             cropped = takenPhoto[x: x + w][y: y + h]
             dfs = DeepFace.find(cropped, db_path='C:/Users/akhme/Desktop/diploma/images')
-            print(dfs)
+            print(cropped, dfs)
             cv2.destroyAllWindows()
 
         cv2.imshow("Face Attendace", img)
@@ -72,7 +72,7 @@ def showEllipse(img, show=True):
 print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 while True:
     success, img = cap.read()
-    showEllipse(img, False)
+    showEllipse(img)
     # dfs = DeepFace.find(img_path=img, db_path="C:/Users/akhme/Desktop/diploma/images", model_name='Facenet')
     # face = DeepFace.detectFace(img)
     
