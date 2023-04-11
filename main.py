@@ -5,7 +5,8 @@ from deepface import DeepFace
 import numpy as np
 import time
 # import dlib
-import face_recognition
+import face_recognition as fc
+from mtcnn import MTCNN
 # import cmake
 # import dlib
 
@@ -69,19 +70,35 @@ def showEllipse(img, show=True):
 
         cv2.imshow("Face Attendace", img)
 
-print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+def isOnePerson(img: any) -> bool:
+    detector = MTCNN()
+    detections = detector.detect_faces(img)
+    print("Length", len(detections))
+    return len(detections) == 1
+
 while True:
     success, img = cap.read()
-    showEllipse(img)
+    face_blurred = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # face_located = fc.face_locations(face_blurred, model='cnn')
+    if cv2.waitKey(1) & 0xFF == ord('o'):
+        print("clicked")
+        if not isOnePerson(face_blurred) :
+            print("There has to be only one face")
+        # else:
+        #     showEllipse(img)
     # dfs = DeepFace.find(img_path=img, db_path="C:/Users/akhme/Desktop/diploma/images", model_name='Facenet')
     # face = DeepFace.detectFace(img)
     
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        print("exit")
         break
 
-    if cv2.waitKey(1) & 0xFF == ord('y'):
-        # print(os.listdir(img_path))
+    if cv2.waitKey(1) & 0xFF == ord('t'):
+        print("taken")
         takePhoto('image' + str(rd.randint(1, 1500000)) + '.png', img)
         break
+    
+    cv2.imshow("Image", img)
+
 
 cap.release()
