@@ -48,6 +48,7 @@ def showEllipse(img, show=True):
     if show:
 
         isTaken = False
+        isFound = None
 
         if cv2.waitKey(1) & 0xFF == ord('z'):
             randId = rd.randint(1, 1500000)
@@ -58,6 +59,22 @@ def showEllipse(img, show=True):
                 took = cv2.imread('image' + str(randId) + '.png')
                 croppedTook = took[square_y: square_y + square_height, square_x: square_x + square_width]
                 cv2.imshow("CroppedTook", croppedTook)
+
+                try:
+                    dfs = DeepFace.extract_faces(croppedTook)
+                    isFound = True
+                    width, height = dfs[0]['facial_area']['w'], dfs[0]['facial_area']['h'] 
+                    size = width*height
+                    distance = 100 / (size**0.5)
+                    if int(distance*100) > 30:
+                        print('far')
+                    else:
+                        print("suits")
+                    print(dfs, size, distance)
+                except:
+                    print("ustudy")
+                    isFound = False
+                    
         ellipsedImg = cv2.ellipse(img, (640, 360), (300, 200), 90, 0, 360, (0, 255, 0), 5)
         squareImg = cv2.rectangle(ellipsedImg, (440, 100), (840, 650), (125, 125, 125), 2)
         # green_image = cv2.cvtColor(image, cv2.C)
@@ -69,7 +86,29 @@ def showEllipse(img, show=True):
             (0, 255, 0), 1, 
             cv2.LINE_AA
         )
-        cv2.imshow("Face Attendace", withText)
+        errorText = cv2.putText(
+            squareImg, 
+            'Face not found', 
+            (50, 680), 
+            cv2.FONT_HERSHEY_COMPLEX, 0.6, 
+            (0, 0, 250), 1, 
+            cv2.LINE_AA
+        )
+
+        foundText = cv2.putText(
+            squareImg, 
+            'Face found', 
+            (50, 680), 
+            cv2.FONT_HERSHEY_COMPLEX, 0.6, 
+            (0, 0, 250), 1, 
+            cv2.LINE_AA
+        )
+        if isFound == False:
+            cv2.imshow("Face Attendace", errorText)
+        elif isFound == None:
+            cv2.imshow("Face Attendace", withText)
+        else:
+            cv2.imshow("Face Attendace", withText)
     else:
         if cv2.waitKey(1) & 0xFF == ord('p'):
             img1 = DeepFace.extract_faces(img)
