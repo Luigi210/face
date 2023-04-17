@@ -141,6 +141,7 @@ def isOnePerson(img: any) -> bool:
 while True:
     success, img = cap.read()
     face_blurred = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    mirrored_img = cv2.flip(img, 1)
     # face_located = fc.face_locations(face_blurred, model='cnn')
     # if cv2.waitKey(1) & 0xFF == ord('o'):
     #     print("clicked")
@@ -151,7 +152,7 @@ while True:
     # dfs = DeepFace.find(img_path=img, db_path="C:/Users/akhme/Desktop/diploma/images", model_name='Facenet')
     # face = DeepFace.detectFace(img)
     
-    showEllipse(img)
+    showEllipse(mirrored_img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         print("exit")
         break
