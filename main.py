@@ -47,25 +47,10 @@ def isUnique(img):
 
 def showEllipse(img, show=True):
     new_img = img
-    # face_located = fc.face_locations(img)
-
+    count = 0
     try:
         isTaken = False
         isFound = None
-
-        # if cv2.waitKey(1) & 0xFF == ord("z"):
-        # randId = rd.randint(1, 1500000)
-        # takePhoto("image" + str(randId) + ".png", img)
-        # isTaken = True
-
-        # if isTaken and os.path.exists("image" + str(randId) + ".png"):
-        # took = cv2.imread("image" + str(randId) + ".png")
-        # croppedTook = took[
-        #     square_y : square_y + square_height,
-        #     square_x : square_x + square_width,
-        # ]
-        # cv2.imshow("CroppedTook", croppedTook)
-
         try:
             dfs = DeepFace.extract_faces(img)
             isFound = True
@@ -78,12 +63,15 @@ def showEllipse(img, show=True):
             if int(distance * 100) > 30:
                 print("far")
                 isFound = "Closer"
+                count = 0
             else:
                 print("suits")
                 isFound = True
+                count = 1
             # print(dfs, size, distance)
         except:
             print("ustudy")
+            count = 0
             isFound = False
 
         ellipsedImg = cv2.ellipse(
@@ -115,8 +103,6 @@ def showEllipse(img, show=True):
                 thickness,
                 cv2.LINE_AA,
             )
-
-            # cv2.imshow("Face Attendace2", img)
         elif isFound == "Closer":
             cv2.putText(
                 squareImg,
@@ -128,7 +114,6 @@ def showEllipse(img, show=True):
                 thickness,
                 cv2.LINE_AA,
             )
-            # cv2.imshow("Face Attendace Closer", img)
         else:
             cv2.putText(
                 squareImg,
@@ -140,7 +125,10 @@ def showEllipse(img, show=True):
                 thickness,
                 cv2.LINE_AA,
             )
-            # cv2.imshow("Face Attendace3", img)
+            if count == 1:
+                foundFace = DeepFace.find(img, db_path="images", model_name="VGG-Face")
+                # print("Identifying", foundFace)
+                print(count)
         cv2.imshow("Dzhigi", img)
     except:
         print("many faces")
