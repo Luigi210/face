@@ -91,7 +91,6 @@ def showEllipse(img, show=True):
         foundTextXY = (750, 680)
         thickness = 1
 
-        print(isFound)
         if isFound == None or isFound == False:
             cv2.putText(
                 squareImg,
@@ -126,9 +125,19 @@ def showEllipse(img, show=True):
                 cv2.LINE_AA,
             )
             if count == 1:
-                foundFace = DeepFace.find(img, db_path="images", model_name="VGG-Face")
-                # print("Identifying", foundFace)
-                print(count)
+                # try:
+                if cv2.waitKey(1) & 0xFF == ord("k"):
+                    foundFace = DeepFace.find(
+                        img,
+                        db_path="C:\\Users\\akhme\\Desktop\\diploma\\images",
+                        model_name="VGG-Face",
+                        enforce_detection=False,
+                    )
+                    print(count, "Identifying", foundFace)
+                    cv2.imshow("Face", img)
+                # except:
+                # print("Exception")
+                # print(count)
         cv2.imshow("Dzhigi", img)
     except:
         print("many faces")
@@ -159,11 +168,9 @@ while True:
 
     # cv2.imshow("Image", mirrored_img)
     if cv2.waitKey(1) & 0xFF == ord("q"):
-        print("exit")
         break
 
     if cv2.waitKey(1) & 0xFF == ord("t"):
-        print("taken")
         takePhoto("image" + str(rd.randint(1, 1500000)) + ".png", img)
         break
 
