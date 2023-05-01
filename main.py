@@ -8,6 +8,30 @@ import time
 import face_recognition as fc
 from mtcnn import MTCNN
 
+
+import firebase_admin
+from firebase_admin import credentials as crd
+from firebase_admin import storage, db
+
+from google.cloud import storage as strg
+from google.oauth2 import service_account
+
+
+credentials = service_account.Credentials.from_service_account_file(
+    "serviceAccountKey.json"
+)
+client = strg.Client(credentials=credentials, project="face-atendance")
+
+cred = crd.Certificate("serviceAccountKey.json")
+
+firebase_admin.initialize_app(
+    cred,
+    {
+        "storageBucket": "face-atendance.appspot.com",
+        "databaseURL": "https://face-atendance-default-rtdb.europe-west1.firebasedatabase.app/",
+    },
+    name="strg",
+)
 # cv2.Vide
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
@@ -54,23 +78,25 @@ def showEllipse(img, show=True):
         try:
             dfs = DeepFace.extract_faces(img)
             isFound = True
-            width, height = (
+            width, height, x, y = (
                 dfs[0]["facial_area"]["w"],
                 dfs[0]["facial_area"]["h"],
+                dfs[0]["facial_area"]["x"],
+                dfs[0]["facial_area"]["y"],
             )
             size = width * height
             distance = 100 / (size**0.5)
             if int(distance * 100) > 30:
-                print("far")
+                # print("far")
                 isFound = "Closer"
                 count = 0
             else:
-                print("suits")
+                # print("suits")
                 isFound = True
                 count = 1
             # print(dfs, size, distance)
         except:
-            print("ustudy")
+            # print("ustudy")
             count = 0
             isFound = False
 
@@ -125,22 +151,50 @@ def showEllipse(img, show=True):
                 cv2.LINE_AA,
             )
             if count == 1:
-                # try:
+                # if x >= 440 and x + width <= 840 and y >= 100 and y + height < 650:
+                # print(True)
+                # else:
+                # print(False)
                 if cv2.waitKey(1) & 0xFF == ord("k"):
+                    # if (
+                    #     os.path.exists("deleted/representations_vgg_face.pkl")
+                    #     == True
+                    # ):
+                    #     os.remove("deleted/representations_vgg_face.pkl")
                     foundFace = DeepFace.find(
                         img,
-                        db_path="C:\\Users\\akhme\\Desktop\\diploma\\images",
+                        db_path="C:\\Users\\akhme\\Desktop\\diploma\\deleted",
                         model_name="VGG-Face",
-                        enforce_detection=False,
+                        # enforce_detection=False,
                     )
-                    print(count, "Identifying", foundFace)
-                    cv2.imshow("Face", img)
-                # except:
-                # print("Exception")
-                # print(count)
+                    if len(foundFace) > 1:
+                        filename = foundFace[0].iloc[0]["identity"]
+                        # filename = filename.split("deleted")
+                        # if filename.count("\\") > 0:
+                        #     img_id = filename.split("\\")[1].split(".")[0]
+                        # else:
+                        img_id = filename.split("/")[1].split(".")[0]
+                        print(img_id)
+                        try:
+                            ref = db.reference("persons")
+                            data = ref.child(img_id).get()
+                            print("Identifying", data["firstname"])
+                        except:
+                            print("Sorry, man", filename)
+                        cv2.imshow(
+                            "Face",
+                            img[
+                                square_start[1] : square_start[1] + 550,
+                                square_start[0] : square_start[0] + 400,
+                            ],
+                        )
+                    else:
+                        print("Error")
+            # print(count)
         cv2.imshow("Dzhigi", img)
     except:
-        print("many faces")
+        asd = 1
+        # print("many faces")
 
 
 def isOnePerson(img: any) -> bool:
@@ -164,7 +218,8 @@ while True:
     try:
         showEllipse(mirrored_img)
     except:
-        print("not found")
+        # print("not found")
+        asd = 2
 
     # cv2.imshow("Image", mirrored_img)
     if cv2.waitKey(1) & 0xFF == ord("q"):
