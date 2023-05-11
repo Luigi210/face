@@ -150,11 +150,12 @@ def showEllipse(img, show=True):
                 thickness,
                 cv2.LINE_AA,
             )
+            print("FACE")
             if count == 1:
                 # if x >= 440 and x + width <= 840 and y >= 100 and y + height < 650:
                 # print(True)
                 # else:
-                # print(False)
+                print(count)
                 if cv2.waitKey(1) & 0xFF == ord("k"):
                     # if (
                     #     os.path.exists("deleted/representations_vgg_face.pkl")
@@ -163,7 +164,7 @@ def showEllipse(img, show=True):
                     #     os.remove("deleted/representations_vgg_face.pkl")
                     foundFace = DeepFace.find(
                         img,
-                        db_path="C:\\Users\\akhme\\Desktop\\diploma\\deleted",
+                        db_path="deleted",
                         model_name="VGG-Face",
                         # enforce_detection=False,
                     )

@@ -25,9 +25,9 @@ data = {
         "year": 4,
         # "last_attendance_time": "2022-12-11 00:54:34"
     },
-    "19B030222": {
+    "19B030291": {
         "firstname": "Assylgul",
-        "middlename": "",
+        "middlename": "Altynbek",
         "lastname": "Janayeva",
         "faculty": "IT",
         "major": "CSS",
@@ -37,12 +37,24 @@ data = {
         "year": 4,
         # "last_attendance_time": "2022-12-11 00:54:34"
     },
-    "19B030291": {
+    "19B030222": {
         "firstname": "Tomiris",
-        "middlename": "",
+        "middlename": "Ustudy",
         "lastname": "Baktybayeva",
         "faculty": "IT",
         "major": "CSS",
+        "starting_year": 2019,
+        # "total_attendance": 7,
+        # "standing": "G",
+        "year": 4,
+        # "last_attendance_time": "2022-12-11 00:54:34"
+    },
+    "19B030067": {
+        "firstname": "Damir",
+        "middlename": "Oraz",
+        "lastname": "Yessenbek",
+        "faculty": "IT",
+        "major": "IS",
         "starting_year": 2019,
         # "total_attendance": 7,
         # "standing": "G",
