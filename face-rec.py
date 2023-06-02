@@ -12,7 +12,8 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 2080)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 2180)
 
 
-img_path = r"C:\\Users\\akhme\\Desktop\\diploma"
+img_path = r"/Users/baktybayevatomiris/Desktop/face/images"
+#img_path = r"C:\\Users\\akhme\\Desktop\\diploma"
 os.chdir(img_path)
 
 
@@ -134,29 +135,6 @@ def showEllipse(img, locations, show=True):
     else:
         print("Many items")
     cv2.imshow("Video", img)
-
-    #     print(isFound)
-    #     if isFound == False:
-    #         text_size_warning, _ = cv2.getTextSize(warningText, font, 0.6, thickness)
-    #         text_size_found, _ = cv2.getTextSize(faceFoundText, font, 0.6, thickness)
-    #         # cv2.rectangle(img, (warningTextXY[0], warningTextXY[1] - text_size_warning[1]), (warningTextXY[0] + text_size_warning[0], warningTextXY[1]), (0, 0, 0), -1)
-    #         # cv2.rectangle(img, (foundTextXY[0], foundTextXY[1] - text_size_found[1]), (foundTextXY[0] + text_size_found[0], foundTextXY[1]), (0, 0, 0), -1)
-
-    #         cv2.imshow("Face Attendace1", img)
-    #     elif isFound == None:
-    #         text_size_error, _ = cv2.getTextSize(faceErrorText, font, 0.6, thickness)
-    #         text_size_found, _ = cv2.getTextSize(faceFoundText, font, 0.6, thickness)
-    #         # cv2.rectangle(img, (errorTextXY[0], errorTextXY[1] - text_size_error[1]), (errorTextXY[0] + text_size_error[0], errorTextXY[1]), (0, 0, 0), -1)
-    #         # cv2.rectangle(img, (foundTextXY[0], foundTextXY[1] - text_size_found[1]), (foundTextXY[0] + text_size_found[0], foundTextXY[1]), (0, 0, 0), -1)
-
-    #         cv2.imshow("Face Attendace2", img)
-    #     else:
-    #         text_size_error, _ = cv2.getTextSize(faceErrorText, font, 0.6, thickness)
-    #         text_size_warning, _ = cv2.getTextSize(warningText, font, 0.6, thickness)
-    #         # cv2.rectangle(img, (warningTextXY[0], warningTextXY[1] - text_size_error[1]), (warningTextXY[0] + text_size_error[0], warningTextXY[1]), (0, 0, 0), -1)
-    #         # cv2.rectangle(img, (errorTextXY[0], errorTextXY[1] - text_size_found[1]), (errorTextXY[0] + text_size_found[0], errorTextXY[1]), (0, 0, 0), -1)
-
-    #         cv2.imshow("Face Attendace3", img)
 
 
 # def isOnePerson(img: any) -> bool:
