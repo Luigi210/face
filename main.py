@@ -5,17 +5,18 @@ from deepface import DeepFace
 import numpy as np
 import time
 
-import face_recognition as fc
-from mtcnn import MTCNN
+# import face_recognition as fc
+#from mtcnn import MTCNN
+
 
 # cv2.Vide
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1120)
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 960)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 
-img_path = r"C:\\Users\\akhme\\Desktop\\diploma\\images"
-os.chdir(img_path)
+# img_path = r"\\Users\\baktybayevatomiris\\Desktop\\face\\images"
+# os.chdir(img_path)
 
 
 square_start, square_end = (440, 100), (840, 650)
@@ -27,22 +28,22 @@ square_width = square_end[0] - square_x
 square_height = square_end[1] - square_y
 
 
-def takePhoto(path: str, img: any):
-    if isUnique(path):
-        cv2.imwrite(path, img)
-        cv2.destroyAllWindows()
+# def takePhoto(path: str, img: any):
+#     if isUnique(path):
+#         cv2.imwrite(path, img)
+#         cv2.destroyAllWindows()
 
 
-def deletePhoto(path):
-    os.remove(img_path + "\\" + path)
+# def deletePhoto(path):
+#     os.remove(img_path + "\\" + path)
 
 
-def isUnique(img):
-    unique = True
-    for file in os.listdir(img_path):
-        if img == file:
-            unique = False
-    return unique
+# def isUnique(img):
+#     unique = True
+#     for file in os.listdir(img_path):
+#         if img == file:
+#             unique = False
+#     return unique
 
 
 def showEllipse(img, show=True):
@@ -91,7 +92,6 @@ def showEllipse(img, show=True):
         foundTextXY = (750, 680)
         thickness = 1
 
-        print(isFound)
         if isFound == None or isFound == False:
             cv2.putText(
                 squareImg,
@@ -126,21 +126,98 @@ def showEllipse(img, show=True):
                 cv2.LINE_AA,
             )
             if count == 1:
-                foundFace = DeepFace.find(img, db_path="images", model_name="VGG-Face")
-                # print("Identifying", foundFace)
-                print(count)
+                # if x >= 440 and x + width <= 840 and y >= 100 and y + height < 650:
+                # print(True)
+                # else:
+                # print(False)
+                if cv2.waitKey(1) & 0xFF == ord("k"):
+                    # if (
+                    #     os.path.exists("deleted/representations_vgg_face.pkl")
+                    #     == True
+                    # ):
+                    #     os.remove("deleted/representations_vgg_face.pkl")
+                    foundFace = DeepFace.find(
+                        img,
+                        db_path="C:\\Users\\akhme\\Desktop\\diploma\\deleted",
+                        model_name="VGG-Face",
+                        # enforce_detection=False,
+                    )
+                    if len(foundFace) > 1:
+                        filename = foundFace[0].iloc[0]["identity"]
+                        # filename = filename.split("deleted")
+                        # if filename.count("\\") > 0:
+                        #     img_id = filename.split("\\")[1].split(".")[0]
+                        # else:
+                        img_id = filename.split("/")[1].split(".")[0]
+                        print(img_id)
+                        try:
+                            ref = db.reference("persons")
+                            data = ref.child(img_id).get()
+                            print("Identifying", data["firstname"])
+                        except:
+                            print("Sorry, man", filename)
+                        cv2.imshow(
+                            "Face",
+                            img[
+                                square_start[1] : square_start[1] + 550,
+                                square_start[0] : square_start[0] + 400,
+                            ],
+                        )
+                    else:
+                        print("Error")
+            # print(count)
         cv2.imshow("Dzhigi", img)
     except:
-        print("many faces")
+        asd = 1
+        # print("many faces")
 
 
-def isOnePerson(img: any) -> bool:
-    detector = MTCNN()
-    detections = detector.detect_faces(img)
-    print("Length", len(detections))
-    return len(detections) == 1
+#         if isFound == None or isFound == False:
+#             cv2.putText(
+#                 squareImg,
+#                 warningText,
+#                 warningTextXY,
+#                 font,
+#                 0.6,
+#                 (0, 0, 0),
+#                 thickness,
+#                 cv2.LINE_AA,
+#             )
+#         elif isFound == "Closer":
+#             cv2.putText(
+#                 squareImg,
+#                 closerFaceText,
+#                 warningTextXY,
+#                 font,
+#                 0.6,
+#                 (250, 0, 0),
+#                 thickness,
+#                 cv2.LINE_AA,
+#             )
+#         else:
+#             cv2.putText(
+#                 squareImg,
+#                 faceFoundText,
+#                 warningTextXY,
+#                 font,
+#                 0.6,
+#                 (0, 250, 0),
+#                 thickness,
+#                 cv2.LINE_AA,
+#             )
+#             if count == 1:
+#                 foundFace = DeepFace.find(img, db_path="images", model_name="VGG-Face")
+#                 print(count, "Identifying", foundFace)
+#         cv2.imshow("Dzhigi", img)
+#     except:
+#         print("many faces")
 
 
+# def isOnePerson(img: any) -> bool:
+#     detector = MTCNN()
+#     detections = detector.detect_faces(img)
+#     print("Length", len(detections))
+#     return len(detections) == 1
 while True:
     success, img = cap.read()
     mirrored_img = cv2.flip(img, 1)
@@ -152,10 +229,10 @@ while True:
     #     showEllipse(img)
     # dfs = DeepFace.find(img_path=img, db_path="C:/Users/akhme/Desktop/diploma/images", model_name='Facenet')
     edited_img = mirrored_img
-    try:
-        showEllipse(mirrored_img)
-    except:
-        print("not found")
+    # try:
+        # showEllipse(mirrored_img)
+    # except:
+        # print("not found")
 
     # cv2.imshow("Image", mirrored_img)
     if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -164,10 +241,9 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == ord("t"):
         print("taken")
-        takePhoto("image" + str(rd.randint(1, 1500000)) + ".png", img)
+        # takePhoto("image" + str(rd.randint(1, 1500000)) + ".png", img)
         break
 
-    # cv2.imshow("Image", mirrored_img)
+    cv2.imshow("Image", img)
 
-
-cap.release()
+    cap.release()
