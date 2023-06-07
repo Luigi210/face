@@ -14,28 +14,26 @@ from pyfirmata import Arduino, SERVO, OUTPUT
 import serial.tools.list_ports
 import random as rd
 import time
-from playsound import playsound
+
+ports = serial.tools.list_ports.comports()
 
 
-# ports = serial.tools.list_ports.comports()
+for port in ports:
+    print(port.device)
 
+board = Arduino('/dev/cu.usbmodem1101')
 
-# for port in ports:
-#     print(port.device)
+servo_pin = 13
+servo = board.get_pin('d:{}:s'.format(servo_pin))
+print(servo, board)
+green_led_pin = 8
+red_led_pin = 9
+buzzer_pin = 12
 
-# board = Arduino('/dev/cu.usbmodem1101')
-
-# servo_pin = 13
-# servo = board.get_pin('d:{}:s'.format(servo_pin))
-# print(servo, board)
-# green_led_pin = 8
-# red_led_pin = 9
-# buzzer_pin = 12
-
-# board.digital[green_led_pin].mode = OUTPUT
-# board.digital[red_led_pin].mode = OUTPUT
-# board.digital[buzzer_pin].mode = OUTPUT
-# board.digital[servo_pin].mode = SERVO
+board.digital[green_led_pin].mode = OUTPUT
+board.digital[red_led_pin].mode = OUTPUT
+board.digital[buzzer_pin].mode = OUTPUT
+board.digital[servo_pin].mode = SERVO
 
 model = VGGFace.loadModel()
 
@@ -258,18 +256,16 @@ def showEllipse(img, show=True):
                         else: 
                             isNotDetected = True
                             print("Not detected")
-                            # board.digital[red_led_pin].write(1)
-                            # board.pass_time(2)
-                            # playsound('media/access-denied.mp4')
-                            # board.digital[red_led_pin].write(0)
+                            board.digital[red_led_pin].write(1)
+                            board.pass_time(2)
+                            board.digital[red_led_pin].write(0)
                     except:
                         isNotDetected = True
                         # board.digital[buzzer_pin].write(12, 569, 2000)
-                       # board.digital[red_led_pin].write(1)
+                        board.digital[red_led_pin].write(1)
                         # print("Face is not detected")
-                        playsound('/Users/baktybayevatomiris/Desktop/face/media/access-denied.mp4')
-                        # board.pass_time(1)
-                        # board.digital[red_led_pin].write(0)
+                        board.pass_time(1)
+                        board.digital[red_led_pin].write(0)
                         
 
                     if not isNotDetected:
@@ -308,31 +304,25 @@ def showEllipse(img, show=True):
                                 
                         datetime_detected = datetime.datetime.now()
                         if (data['sex'] == 'F' and analyze[0]['dominant_gender'] == 'Woman') or (data['sex'] == 'M' and analyze[0]['dominant_gender'] == 'Man'):
-                            # board.digital[green_led_pin].write(1)
-                            # board.digital[servo_pin].write(90)
+                            board.digital[green_led_pin].write(1)
+                            board.digital[servo_pin].write(90)
                             print(data['firstname'], data['lastname'])
-                            if data['firstname'] == 'Vladimir':
-                                playsound('/Users/baktybayevatomiris/Desktop/face/media/popi.mp4')
-                            else:
-                                playsound('/Users/baktybayevatomiris/Desktop/face/media/access-granted.mp4')
                             time.sleep(2)
-                            # board.digital[green_led_pin].write(0)
-                            # board.digital[servo_pin].write(0)
+                            board.digital[green_led_pin].write(0)
+                            board.digital[servo_pin].write(0)
                         else:
                             isNotDetected = True
                         # board.digital[buzzer_pin].write(0)
                     else:
-                        # board.digital[red_led_pin].write(1)
-                        # board.pass_time(1)
-                        playsound('/Users/baktybayevatomiris/Desktop/face/media/access-denied.mp4')
-                       # board.digital[red_led_pin].write(0)
+                        board.digital[red_led_pin].write(1)
+                        board.pass_time(1)
+                        board.digital[red_led_pin].write(0)
 
             except: 
                 print("Some error")
-                # board.digital[red_led_pin].write(1)
-                # board.pass_time(1)
-                playsound('/Users/baktybayevatomiris/Desktop/face/media/access-denied.mp4')
-                #board.digital[red_led_pin].write(0)
+                board.digital[red_led_pin].write(1)
+                board.pass_time(1)
+                board.digital[red_led_pin].write(0)
     cv2.imshow("Dzhigi", img)
 
 
