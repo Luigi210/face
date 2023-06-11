@@ -313,6 +313,8 @@ def showEllipse(img, show=True):
                             print(data['firstname'], data['lastname'])
                             if data['firstname'] == 'Vladimir':
                                 playsound('/Users/baktybayevatomiris/Desktop/face/media/popi.mp4')
+                            elif data['firstname'] == "Alimzhan" and data['lastname'] == "Amanov":
+                                playsound('/Users/baktybayevatomiris/Desktop/face/media/welcome-amanov.mp4')
                             else:
                                 playsound('/Users/baktybayevatomiris/Desktop/face/media/access-granted.mp4')
                             time.sleep(2)

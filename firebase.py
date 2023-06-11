@@ -82,6 +82,16 @@ data = {
         "sex": "M",
         "starting_year":2015
     },
+    "19P030069":{
+        "degree": "PhD",
+        "faculty": "01",
+        "firstname":"Alimzhan",
+        "lastname": "Amanov",
+        "major": "IS",
+        "middlename": "Unknown",
+        "sex": "M",
+        "starting_year":2019
+    },
     "19B030067":{
         "degree": "Bachelor",
         "faculty": "01",
