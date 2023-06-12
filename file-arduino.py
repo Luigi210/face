@@ -1,50 +1,42 @@
 import cv2
 from deepface import DeepFace
 from deepface.basemodels import VGGFace
-
+import face_recognition 
 import firebase_admin
 from firebase_admin import credentials as crd
 from firebase_admin import storage, db
-
 import numpy as np
-
 from google.cloud import storage as strg
 from google.oauth2 import service_account
-
 import os
 import datetime
-
 from pyfirmata import Arduino, SERVO, OUTPUT
 import serial.tools.list_ports
-
 import random as rd
 import time
-
 from playsound import playsound
 
 
-ports = serial.tools.list_ports.comports()
+# ports = serial.tools.list_ports.comports()
 
-for port in ports:
-    print(port.device)
 
-board = Arduino('/dev/cu.usbmodem1101')
+# for port in ports:
+#     print(port.device)
 
-servo_1_pin = 13
-servo_2_pin = 7
+# board = Arduino('/dev/cu.usbmodem1101')
 
-servo = board.get_pin('d:{}:s'.format(servo_1_pin))
+# servo_1_pin = 13
+# servo_2_pin = 7
+# servo = board.get_pin('d:{}:s'.format(servo_1_pin))
+# print(servo, board)
+# green_led_pin = 9
+# red_led_pin = 8
 
-print(servo, board)
+# board.digital[green_led_pin].mode = OUTPUT
+# board.digital[red_led_pin].mode = OUTPUT
+# board.digital[servo_2_pin].mode = SERVO
+# board.digital[servo_1_pin].mode = SERVO
 
-green_led_pin = 9
-red_led_pin = 8
-
-board.digital[green_led_pin].mode = OUTPUT
-board.digital[red_led_pin].mode = OUTPUT
-
-board.digital[servo_2_pin].mode = SERVO
-board.digital[servo_1_pin].mode = SERVO
 
 credentials = service_account.Credentials.from_service_account_file('serviceAccountKey.json')
 client = strg.Client(credentials=credentials, project='face-atendance')
@@ -66,7 +58,6 @@ square_y = square_start[1]
 
 square_width = square_end[0] - square_x
 square_height = square_end[1] - square_y
-
   
 path = 'db'
 
@@ -194,19 +185,11 @@ def showEllipse(img, show=True):
         if count == 1 :
             try:
                 foundFace = DeepFace.find(img, db_path='/Users/baktybayevatomiris/Desktop/face/db', model_name="Facenet")
-                # print("FOUNDFACE", foundFace)
+                print("FOUNDFACE", foundFace)
                 if len(foundFace) > 0: 
                     img_path_extracted = foundFace[0].iloc[0]['identity']
                     if img_path_extracted.count(path) > 0:
                         img_id = img_path_extracted.split(path)[1].split(".")[0].split('/')[1]
-
-                    print(img_id)
-
-                    imgS = cv2.resize(img,(0,0),None,0.25,0.25)
-                    imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
-
-                    facesCurFrame = face_recognition.face_locations(imgS)
-                    encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame)
 
                     isNotDetected = False
                     print(img_path_extracted)
@@ -218,7 +201,10 @@ def showEllipse(img, show=True):
                         print(
                             "VGG-FACE", verified['distance'], '\n',
                             "FACENET", verified_facenet['distance'], '\n', 
+                            # 'ArcFace', verified_arcface['distance'], '\n',
                             'Gender', analyze[0]['dominant_gender'], '\n',
+                            # matches, matchIndex,
+                            # matches[matchIndex],
                             verified_facenet['distance']*100, '\n',verified['distance']*100
                             )
                         
@@ -230,17 +216,17 @@ def showEllipse(img, show=True):
                         else: 
                             isNotDetected = True
                             print("Not detected")
-                            board.digital[red_led_pin].write(1)
-                            board.pass_time(2)
+                            # board.digital[red_led_pin].write(1)
+                            # board.pass_time(2)
                             playsound('media/access-denied.mp4')
-                            board.digital[red_led_pin].write(0)
+                            # board.digital[red_led_pin].write(0)
                     except:
                         isNotDetected = True
-                        board.digital[red_led_pin].write(1)
+                        # board.digital[red_led_pin].write(1)
                         print("Face is not detected")
                         playsound('/Users/baktybayevatomiris/Desktop/face/media/access-denied.mp4')
-                        board.pass_time(1)
-                        board.digital[red_led_pin].write(0)
+                        # board.pass_time(1)
+                        # board.digital[red_led_pin].write(0)
                         
 
                     if not isNotDetected:
@@ -250,7 +236,7 @@ def showEllipse(img, show=True):
                         sorted = sessionsRef.order_by_child("enter_time").get()
                         sorted = list(sorted.items())[::-1]
                         studentData = sorted[0]
-                        board.pass_time(2)
+                        # board.pass_time(2)
                         # print("Goes on")
                         if len(sorted) > 0:
                             studentEnter_Exit = sorted[0][1]['enter_or_exit']
@@ -261,6 +247,7 @@ def showEllipse(img, show=True):
                             countPush += 1
                             if countPush == 1 and ((data['sex'] == 'F' and analyze[0]['dominant_gender'] == 'Woman') or (data['sex'] == 'M' and analyze[0]['dominant_gender'] == 'Man')):
                                 sessionsRef.push({
+                                    # "id": studentData['id'],
                                     "id": img_id,
                                     "firstname": data['firstname'],
                                     "middlename": data['middlename'],
@@ -272,24 +259,12 @@ def showEllipse(img, show=True):
                                     "enter_or_exit": studentEnter_Exit,
                                     "starting_year": data['starting_year']
                                 })
-                        else:
-                            sessionsRef.push({
-                                "id": img_id,
-                                "firstname": data['firstname'],
-                                "middlename": data['middlename'],
-                                "lastname": data['lastname'],
-                                "faculty": data['faculty'],
-                                "major": data['major'],
-                                "starting_year": data['starting_year'],
-                                "enter_time": f'{datetime.datetime.now()}',
-                                "enter_or_exit": "enter",
-                                "starting_year": data['starting_year']
-                            }) 
+                                
                         datetime_detected = datetime.datetime.now()
                         if (data['sex'] == 'F' and analyze[0]['dominant_gender'] == 'Woman') or (data['sex'] == 'M' and analyze[0]['dominant_gender'] == 'Man'):
-                            board.digital[green_led_pin].write(1)
-                            board.digital[servo_1_pin].write(90)
-                            board.digital[servo_2_pin].write(90)
+                            # board.digital[green_led_pin].write(1)
+                            # board.digital[servo_1_pin].write(90)
+                            # board.digital[servo_2_pin].write(90)
                             print(data['firstname'], data['lastname'])
                             if data['firstname'] == 'Vladimir':
                                 playsound('/Users/baktybayevatomiris/Desktop/face/media/popi.mp4')
@@ -298,23 +273,23 @@ def showEllipse(img, show=True):
                             else:
                                 playsound('/Users/baktybayevatomiris/Desktop/face/media/access-granted.mp4')
                             time.sleep(2)
-                            board.digital[green_led_pin].write(0)
-                            board.digital[servo_1_pin].write(180)
-                            board.digital[servo_2_pin].write(0)
+                            # board.digital[green_led_pin].write(0)
+                            # board.digital[servo_1_pin].write(180)
+                            # board.digital[servo_2_pin].write(0)
                         else:
                             isNotDetected = True
                     else:
-                        board.digital[red_led_pin].write(1)
-                        board.pass_time(1)
+                        # board.digital[red_led_pin].write(1)
+                        # board.pass_time(1)
                         playsound('/Users/baktybayevatomiris/Desktop/face/media/access-denied.mp4')
-                        board.digital[red_led_pin].write(0)
+                        # board.digital[red_led_pin].write(0)
 
             except: 
                 print("Some error")
-                board.digital[red_led_pin].write(1)
-                board.pass_time(1)
+                # board.digital[red_led_pin].write(1)
+                # board.pass_time(1)
                 playsound('/Users/baktybayevatomiris/Desktop/face/media/access-denied.mp4')
-                board.digital[red_led_pin].write(0)
+                # board.digital[red_led_pin].write(0)
     cv2.imshow("Dzhigi", img)
 
 
