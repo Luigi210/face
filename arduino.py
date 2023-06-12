@@ -13,7 +13,7 @@ servo_13_pin = 13
 servo_13 = board.get_pin('d:{}:s'.format(servo_13_pin))
 led_8_pin = 8
 led_9_pin = 9
-servo_12_pin = 12
+servo_12_pin = 7
 servo_12 = board.get_pin('d:{}:s'.format(servo_12_pin))
 
 print(servo_13, servo_12, board)
@@ -34,7 +34,7 @@ while True:
 
 
     board.pass_time(2)
-    board.digital[servo_13_pin].write(180)
+    board.digital[servo_13_pin].write(0)
     board.digital[servo_12_pin].write(180)
     board.digital[led_8_pin].write(1)
     board.digital[led_9_pin].write(1)

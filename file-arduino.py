@@ -184,7 +184,10 @@ def showEllipse(img, show=True):
         )
         if count == 1 :
             try:
+                resStart1 = time.time()
                 foundFace = DeepFace.find(img, db_path='/Users/baktybayevatomiris/Desktop/face/db', model_name="Facenet")
+                resEnd1 = time.time()
+                print("Time estimated", resEnd1 - resStart1)
                 print("FOUNDFACE", foundFace)
                 if len(foundFace) > 0: 
                     img_path_extracted = foundFace[0].iloc[0]['identity']
@@ -199,23 +202,22 @@ def showEllipse(img, show=True):
                         analyze = DeepFace.analyze(img)
                         
                         print(
-                            "VGG-FACE", verified['distance'], '\n',
-                            "FACENET", verified_facenet['distance'], '\n', 
-                            # 'ArcFace', verified_arcface['distance'], '\n',
+                            # "VGG-FACE", verified['distance'], '\n',
+                            # "FACENET", verified_facenet['distance'], '\n', 
                             'Gender', analyze[0]['dominant_gender'], '\n',
                             # matches, matchIndex,
                             # matches[matchIndex],
-                            verified_facenet['distance']*100, '\n',verified['distance']*100
+                            # verified_facenet['distance']*100, '\n',verified['distance']*100
                             )
                         
                         # if verified['verified'] and int(verified_facenet['distance']*100) in range(-20, 24) and int(verified['distance']*100) in range(-20, 24) and verified_facenet['verified']:
                         if verified['verified'] and verified_facenet['verified']:
                             # print(verified, matches)
-                            print("True")
+                            # print("True")
                             isNotDetected = False
                         else: 
                             isNotDetected = True
-                            print("Not detected")
+                            # print("Not detected")
                             # board.digital[red_led_pin].write(1)
                             # board.pass_time(2)
                             playsound('media/access-denied.mp4')
@@ -223,7 +225,7 @@ def showEllipse(img, show=True):
                     except:
                         isNotDetected = True
                         # board.digital[red_led_pin].write(1)
-                        print("Face is not detected")
+                        # print("Face is not detected")
                         playsound('/Users/baktybayevatomiris/Desktop/face/media/access-denied.mp4')
                         # board.pass_time(1)
                         # board.digital[red_led_pin].write(0)
@@ -245,22 +247,21 @@ def showEllipse(img, show=True):
                             else:
                                 studentEnter_Exit = "enter"
                             countPush += 1
-                            if countPush == 1 and ((data['sex'] == 'F' and analyze[0]['dominant_gender'] == 'Woman') or (data['sex'] == 'M' and analyze[0]['dominant_gender'] == 'Man')):
-                                sessionsRef.push({
-                                    # "id": studentData['id'],
-                                    "id": img_id,
-                                    "firstname": data['firstname'],
-                                    "middlename": data['middlename'],
-                                    "lastname": data['lastname'],
-                                    "faculty": data['faculty'],
-                                    "major": data['major'],
-                                    "starting_year": data['starting_year'],
-                                    "enter_time": f'{datetime.datetime.now()}',
-                                    "enter_or_exit": studentEnter_Exit,
-                                    "starting_year": data['starting_year']
-                                })
+                            # if countPush == 1 and ((data['sex'] == 'F' and analyze[0]['dominant_gender'] == 'Woman') or (data['sex'] == 'M' and analyze[0]['dominant_gender'] == 'Man')):
+                                # sessionsRef.push({
+                                #     "id": img_id,
+                                #     "firstname": data['firstname'],
+                                #     "middlename": data['middlename'],
+                                #     "lastname": data['lastname'],
+                                #     "faculty": data['faculty'],
+                                #     "major": data['major'],
+                                #     "starting_year": data['starting_year'],
+                                #     "enter_time": f'{datetime.datetime.now()}',
+                                #     "enter_or_exit": studentEnter_Exit,
+                                #     "starting_year": data['starting_year']
+                                # })
                                 
-                        datetime_detected = datetime.datetime.now()
+                        # datetime_detected = datetime.datetime.now()
                         if (data['sex'] == 'F' and analyze[0]['dominant_gender'] == 'Woman') or (data['sex'] == 'M' and analyze[0]['dominant_gender'] == 'Man'):
                             # board.digital[green_led_pin].write(1)
                             # board.digital[servo_1_pin].write(90)

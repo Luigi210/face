@@ -202,12 +202,6 @@ def showEllipse(img, show=True):
 
                     print(img_id)
 
-                    imgS = cv2.resize(img,(0,0),None,0.25,0.25)
-                    imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
-
-                    facesCurFrame = face_recognition.face_locations(imgS)
-                    encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame)
-
                     isNotDetected = False
                     print(img_path_extracted)
                     try:
@@ -299,8 +293,8 @@ def showEllipse(img, show=True):
                                 playsound('/Users/baktybayevatomiris/Desktop/face/media/access-granted.mp4')
                             time.sleep(2)
                             board.digital[green_led_pin].write(0)
-                            board.digital[servo_1_pin].write(180)
-                            board.digital[servo_2_pin].write(0)
+                            board.digital[servo_1_pin].write(0)
+                            board.digital[servo_2_pin].write(180)
                         else:
                             isNotDetected = True
                     else:
